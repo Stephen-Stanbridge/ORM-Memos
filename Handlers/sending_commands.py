@@ -12,7 +12,7 @@ def make_checks(config: config_class.SendMemo) -> Union[bool, Tuple[bool, str]]:
     if memo_belongs_to_user is None:
         return False, "You don't own memo with this id. Not sent."
     if does_user_exist is None:
-        return False, "No user with id {}. Not sent.".format(receiver_id)
+        return False, "No user with id {}. Ommited.".format(receiver_id)
     memo_was_already_sent_to_user = session.query(SentMemo).filter(SentMemo.memo_id == memo_id,
                                                                    SentMemo.receiver_id == receiver_id).first()
     if memo_was_already_sent_to_user is not None:
@@ -57,8 +57,12 @@ def send_memo_to_users(config: config_class.SendMemo) -> None:
         config.receiver = receiver
         checks = make_checks(config)
         if isinstance(checks, tuple):
-            print(checks[1])
-            break
+            if 'Ommited' in checks[1]:
+                print(checks[1])
+                continue
+            else:
+                print(checks[1])
+                break
         elif checks:
             send_memo(config)
         else:
