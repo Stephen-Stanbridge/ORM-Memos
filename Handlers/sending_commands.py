@@ -5,18 +5,14 @@ from typing import Union, Tuple
 session = Session()
 
 
-def does_user_exist(receiver_id: int) -> Union[bool, Tuple]:
-    query = session.query(User).filter(User.id == receiver_id).first()
-    if query is None:
-        return False, "No user with id {}.".format(receiver_id)
-    return True
-
-
 def make_checks(config: config_class.SendMemo) -> Union[bool, Tuple[bool, str]]:
     memo_id, user, receiver_id = config.memo_id, config.user, config.receiver
     memo_belongs_to_user = session.query(Memo).filter(Memo.id == memo_id, Memo.creator_id == user.id).first()
+    does_user_exist = session.query(User).filter(User.id == receiver_id).first()
     if memo_belongs_to_user is None:
-        return False, "You don't own memo with this id."
+        return False, "You don't own memo with this id. Not sent."
+    if does_user_exist is None:
+        return False, "No user with id {}. Not sent.".format(receiver_id)
     memo_was_already_sent_to_user = session.query(SentMemo).filter(SentMemo.memo_id == memo_id,
                                                                    SentMemo.receiver_id == receiver_id).first()
     if memo_was_already_sent_to_user is not None:
@@ -60,11 +56,7 @@ def send_memo_to_users(config: config_class.SendMemo) -> None:
     for receiver in receivers:
         config.receiver = receiver
         checks = make_checks(config)
-        is_user = does_user_exist(receiver)
-        if isinstance(is_user, tuple):
-            print(is_user[1])
-            continue
-        elif isinstance(checks, tuple):
+        if isinstance(checks, tuple):
             print(checks[1])
             break
         elif checks:
