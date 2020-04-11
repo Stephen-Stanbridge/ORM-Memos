@@ -10,9 +10,9 @@ def make_checks(config: config_class.SendMemo) -> Union[bool, Tuple[bool, str]]:
     memo_belongs_to_user = session.query(Memo).filter(Memo.id == memo_id, Memo.creator_id == user.id).first()
     does_user_exist = session.query(User).filter(User.id == receiver_id).first()
     if memo_belongs_to_user is None:
-        return False, "You don't own memo with this id. Not sent."
+        return False, "MemoError"
     if does_user_exist is None:
-        return False, "No user with id {}. Ommited.".format(receiver_id)
+        return False, "UserError"
     memo_was_already_sent_to_user = session.query(SentMemo).filter(SentMemo.memo_id == memo_id,
                                                                    SentMemo.receiver_id == receiver_id).first()
     if memo_was_already_sent_to_user is not None:
@@ -40,8 +40,9 @@ def send_memo_to_all(user: User, memo_id: int) -> None:
         config.receiver = receiver
         checks = make_checks(config)
         if isinstance(checks, tuple):
-            print(checks[1])
-            break
+            if checks[1] == "MemoError":
+                print("You don't own memo with this id. Memo not sent.")
+                break
         elif checks:
             send_memo(config)
         else:
@@ -57,11 +58,11 @@ def send_memo_to_users(config: config_class.SendMemo) -> None:
         config.receiver = receiver
         checks = make_checks(config)
         if isinstance(checks, tuple):
-            if 'Ommited' in checks[1]:
-                print(checks[1])
+            if checks[1] == 'UserError':
+                print("User with id {} doesn't exist. Ommited.")
                 continue
-            else:
-                print(checks[1])
+            elif checks[1] == 'MemoError':
+                print("You don't own memo with this id. Memo not sent.")
                 break
         elif checks:
             send_memo(config)
