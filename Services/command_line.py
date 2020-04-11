@@ -41,7 +41,7 @@ def execute(command: str, user: User):
         users_help()
     elif re.match(regex_for_users, command):
         regex = re.match(regex_for_users, command)
-        handle_users(regex, user)
+        handle_users(regex)
     elif command == "user":
         account_help()
     elif re.match(regex_for_account_management, command):
