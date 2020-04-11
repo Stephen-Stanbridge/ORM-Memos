@@ -59,7 +59,7 @@ def send_memo_to_users(config: config_class.SendMemo) -> None:
         checks = make_checks(config)
         if isinstance(checks, tuple):
             if checks[1] == 'UserError':
-                print("User with id {} doesn't exist. Ommited.")
+                print("User with id {} doesn't exist. Ommited.".format(receiver))
                 continue
             elif checks[1] == 'MemoError':
                 print("You don't own memo with this id. Memo not sent.")
