@@ -1,6 +1,7 @@
 from SQL.setup_db import engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer, ForeignKey, Boolean
+from sqlalchemy.orm import relationship
 
 
 Base = declarative_base()
@@ -25,6 +26,9 @@ class Memo(Base):
     content = Column(String)
     sent = Column(Boolean, default=False)
     creator_id = Column(Integer, ForeignKey('users.id'))
+
+    sent_memo = relationship('SentMemo', backref='memo_details')
+    creating_user = relationship('User')
 
     def __repr__(self):
         return "<Memo(id={}, title={}, content={}, sent={}, creator_id={})>".format(self.id, self.title, self.content,
