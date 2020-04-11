@@ -22,7 +22,7 @@ def bottom_toolbar():
 
 if user:
     os.system('clear')
-    print("Welcome to your dashboard", colored(user.username.capitalize(), "green"))
+    print("Welcome to your dashboard", colored(user.username, "green"))
     print("Type 'help' for available commands.")
     print("To exit application use 'exit' command.")
     while 1:
