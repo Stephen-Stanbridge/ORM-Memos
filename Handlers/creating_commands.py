@@ -1,7 +1,6 @@
 import sys
 from prettytable import PrettyTable
 from prompt_toolkit import prompt
-from termcolor import colored
 from Models.models import User, Memo, SentMemo
 from SQL.setup_db import Session
 session = Session()
