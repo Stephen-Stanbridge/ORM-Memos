@@ -1,0 +1,9 @@
+*/__init__.py
+.idea
+*/__pycache__
+.memo_history
+.git
+Config/settings.py
+venv/
+SQL/*
+__pycache__/
