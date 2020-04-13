@@ -18,19 +18,15 @@ def check_username(username: str) -> bool:
     return False
 
 
-def login_or_register(username: str, password: str) -> Union[User, None]:
+def login_or_register(username: str, password: str) -> Union[User, str]:
     username = username.capitalize()
-    query = session.query(User).filter(User.username == username)
-    does_exist = False if query.count() == 0 else True
-    if does_exist:
-        user = query.one()
+    user = session.query(User).filter(User.username == username).first()
+    if user is not None:
         if user.password == hash_password(password):
             return user
-        print("Wrong password.")
-        return None
+        return "Wrong password."
     if not check_username(username):
-        print("Username can only contain letters and _ character.")
-        return None
+        return "Username can only contain letters and _ character."
     new_user = User(username=username, password=hash_password(password))
     session.add(new_user)
     session.commit()
@@ -38,6 +34,7 @@ def login_or_register(username: str, password: str) -> Union[User, None]:
 
 
 def delete_user(user: User) -> str:
+    session.delete(user)
     session.query(User).filter(User.id == user.id).delete()
     delete_all_memos_from_inbox(user)
     session.query(Memo).filter(Memo.creator_id == user.id).delete()

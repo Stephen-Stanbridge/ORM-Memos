@@ -20,7 +20,7 @@ def bottom_toolbar():
     return HTML('<style bg="ansired">Memos server</style>')
 
 
-if user:
+if isinstance(user, User):
     os.system('clear')
     print("Welcome to your dashboard", colored(user.username, "green"))
     print("Type 'help' for available commands.")
@@ -28,3 +28,5 @@ if user:
     while 1:
         user_input = prompt('--> ', history=FileHistory('.memo_history'), bottom_toolbar=bottom_toolbar())
         execute(user_input, user)
+else:
+    print(user)
