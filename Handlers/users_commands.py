@@ -6,7 +6,7 @@ from Models.models import User
 session = Session()
 
 
-def get_list_of_all_users() -> str:
+def get_list_of_all_users() -> prettytable:
     all_users = session.query(User).all()
     list_of_users = PrettyTable()
     list_of_users.field_names = ['USERNAME', 'ID']
@@ -15,7 +15,7 @@ def get_list_of_all_users() -> str:
     return list_of_users
 
 
-def username_from_id(user_id: int) -> str:
+def username_from_id(user_id: int) -> prettytable:
     username = session.query(User.username).filter(User.id == user_id).first()
     if username is None:
         return "No user with this id."
@@ -25,7 +25,7 @@ def username_from_id(user_id: int) -> str:
     return result
 
 
-def id_from_username(username: str) -> str:
+def id_from_username(username: str) -> prettytable:
     user_id = session.query(User.id).filter(User.username == username.capitalize()).first()
     if user_id is None:
         return "User with this username doesn't exist."
