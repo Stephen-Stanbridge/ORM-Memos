@@ -6,7 +6,7 @@ from Handlers.inbox_commands import get_all_received_memos, get_received_memo_by
     delete_memo_from_inbox_by_id
 from Handlers.sending_commands import send_memo_to_all, send_memo_to_users
 from Handlers.users_commands import get_list_of_all_users, get_username_or_id
-from Handlers.User import delete_user, change_password
+from Handlers.account_management import delete_user, change_password
 from Models.models import User
 
 

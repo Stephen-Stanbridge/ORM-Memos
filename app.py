@@ -4,7 +4,7 @@ from prompt_toolkit.history import FileHistory
 from termcolor import colored
 from Services.command_line import execute
 from Models.models import User
-from Handlers.User import login_or_register
+from Handlers.account_management import login_or_register
 import argparse
 from prompt_toolkit.formatted_text import HTML
 

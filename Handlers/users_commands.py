@@ -1,4 +1,4 @@
-from typing import re as re_type
+from typing import Union, re as re_type
 import re
 from prettytable import PrettyTable
 from SQL.setup_db import Session
@@ -6,7 +6,7 @@ from Models.models import User
 session = Session()
 
 
-def get_list_of_all_users() -> prettytable:
+def get_list_of_all_users() -> PrettyTable:
     all_users = session.query(User).all()
     list_of_users = PrettyTable()
     list_of_users.field_names = ['USERNAME', 'ID']
@@ -15,7 +15,7 @@ def get_list_of_all_users() -> prettytable:
     return list_of_users
 
 
-def username_from_id(user_id: int) -> prettytable:
+def username_from_id(user_id: int) -> Union[PrettyTable, str]:
     username = session.query(User.username).filter(User.id == user_id).first()
     if username is None:
         return "No user with this id."
@@ -25,7 +25,7 @@ def username_from_id(user_id: int) -> prettytable:
     return result
 
 
-def id_from_username(username: str) -> prettytable:
+def id_from_username(username: str) -> Union[PrettyTable, str]:
     user_id = session.query(User.id).filter(User.username == username.capitalize()).first()
     if user_id is None:
         return "User with this username doesn't exist."

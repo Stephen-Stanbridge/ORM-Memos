@@ -22,7 +22,7 @@ def create_memo(user: User) -> str:
     return "Memo with id {} created successfully.".format(new_memo.id)
 
 
-def get_all_created_memos(user: User) -> prettytable:
+def get_all_created_memos(user: User) -> PrettyTable:
     query = session.query(Memo).filter(Memo.creator_id == user.id)
     printed_result = PrettyTable()
     printed_result.field_names = ["ID", "TITLE", "SENT"]
