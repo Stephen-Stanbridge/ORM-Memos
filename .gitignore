@@ -3,7 +3,7 @@
 */__pycache__
 .memo_history
 .git
-Config/settings.py
 venv/
-SQL/*
+SQL/db_strings
 __pycache__/
+.pytest_cache/
