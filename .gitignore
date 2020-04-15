@@ -4,6 +4,6 @@
 .memo_history
 .git
 venv/
-SQL/db_strings
+SQL/db_strings.py
 __pycache__/
 .pytest_cache/
