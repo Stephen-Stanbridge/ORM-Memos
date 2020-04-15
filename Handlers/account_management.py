@@ -1,4 +1,4 @@
-from SQL.setup_db import Session
+from SQL.setup_db import Session, engine
 from Models.models import User, Memo
 from Handlers.inbox_commands import delete_all_memos_from_inbox
 from typing import Union
@@ -34,10 +34,9 @@ def login_or_register(username: str, password: str) -> Union[User, str]:
 
 
 def delete_user(user: User) -> str:
-    session.delete(user)
-    session.query(User).filter(User.id == user.id).delete()
     delete_all_memos_from_inbox(user)
     session.query(Memo).filter(Memo.creator_id == user.id).delete()
+    session.query(User).filter(User.id == user.id).delete()
     session.commit()
     return "User, inbox and created memos deleted. Use exit command."
 
