@@ -1,6 +1,6 @@
-from Handlers.creating_commands import create_memo, get_all_created_memos
+from Handlers.creating_commands import create_memo, get_all_created_memos, get_content_of_memo_by_id
 import pytest
-from Models.models import Memo
+from Models.models import Memo, User
 import io
 import re
 from conftest import does_table_contain_all_words
@@ -30,10 +30,23 @@ def test_successfull_create_memo(monkeypatch, user, session):
     assert len(session.query(Memo).all()) == memos_count + 1
 
 
-def test_get_all_created_memos(user, session):
-    memos = [Memo(title="Title2", content="this is content2", sent=True, creator_id=user.id),
-             Memo(title="Title3", content="this is content3", sent=False, creator_id=user.id)]
-    session.bulk_save_objects(memos)
-    session.commit()
+def test_get_all_created_memos(memos, user):
     words = ['Title2', 'Title3', 'True', 'False']
     assert does_table_contain_all_words(words, get_all_created_memos(user))
+
+
+PARAMS = [
+    (10, "You don't own memo with this id."),
+    (4, "You don't own memo with this id.")
+]
+
+
+@pytest.mark.parametrize('memo_id, result', PARAMS)
+def test_improper_get_content_of_memo_by_id(user, memo_id, result, session):
+    new_user = User(username="new_user", password="password")
+    session.add(new_user)
+    session.commit()
+    memo = Memo(id=4, title="Another", content="users memo", sent=False, creator_id=new_user.id)
+    session.add(memo)
+    session.commit()
+    assert get_content_of_memo_by_id(user, memo_id) == result
