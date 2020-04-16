@@ -1,4 +1,4 @@
-from SQL.setup_db import Session, engine
+from SQL.setup_db import Session
 from Models.models import User, Memo
 from Handlers.inbox_commands import delete_all_memos_from_inbox
 from typing import Union
