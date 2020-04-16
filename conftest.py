@@ -29,6 +29,14 @@ def user(session):
     yield user
 
 
+@pytest.fixture
+def memos(session, user):
+    memos = [Memo(title="Title2", content="this is content2", sent=True, creator_id=user.id),
+             Memo(title="Title3", content="this is content3", sent=False, creator_id=user.id)]
+    session.bulk_save_objects(memos)
+    session.commit()
+
+
 def does_table_contain_all_words(words: list, table: PrettyTable) -> bool:
     table = table.get_html_string()
     table = re.split(r'<td>|</td>', table)
