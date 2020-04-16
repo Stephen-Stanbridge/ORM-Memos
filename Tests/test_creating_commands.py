@@ -1,7 +1,9 @@
-from Handlers.creating_commands import create_memo
+from Handlers.creating_commands import create_memo, get_all_created_memos
 import pytest
 from Models.models import Memo
 import io
+import re
+from conftest import does_table_contain_all_words
 
 
 PARAMS = [
@@ -26,3 +28,12 @@ def test_successfull_create_memo(monkeypatch, user, session):
     monkeypatch.setattr('sys.stdin', io.StringIO('This is title\nAnd this is content'))
     assert 'memo with id' and 'created successfully' in create_memo(user)
     assert len(session.query(Memo).all()) == memos_count + 1
+
+
+def test_get_all_created_memos(user, session):
+    memos = [Memo(title="Title2", content="this is content2", sent=True, creator_id=user.id),
+             Memo(title="Title3", content="this is content3", sent=False, creator_id=user.id)]
+    session.bulk_save_objects(memos)
+    session.commit()
+    words = ['Title2', 'Title3', 'True', 'False']
+    assert does_table_contain_all_words(words, get_all_created_memos(user))
