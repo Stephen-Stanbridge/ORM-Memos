@@ -40,13 +40,13 @@ def test_successfull_login(user, session):
 
 
 def test_delete_user(session, user):
-    assert len(session.query(Memo).all()) == 1
-    assert len(session.query(SentMemo).all()) == 1
-    assert len(session.query(User).all()) == 1
+    memos_count = len(session.query(Memo).all())
+    sent_memos_count = len(session.query(SentMemo).all()) == 1
+    users_count = len(session.query(User).all()) == 1
     delete_user(user)
-    assert len(session.query(User).all()) == 0
-    assert len(session.query(Memo).all()) == 0
-    assert len(session.query(SentMemo).all()) == 0
+    assert len(session.query(User).all()) == users_count - 1
+    assert len(session.query(Memo).all()) == memos_count - 1
+    assert len(session.query(SentMemo).all()) == sent_memos_count - 1
 
 
 def test_change_password_same(user):
