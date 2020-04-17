@@ -44,9 +44,11 @@ PARAMS = [
 @pytest.mark.parametrize('memo_id, result', PARAMS)
 def test_improper_get_content_of_memo_by_id(user, memo_id, result, session):
     new_user = User(username="new_user", password="password")
-    session.add(new_user)
-    session.commit()
     memo = Memo(id=4, title="Another", content="users memo", sent=False, creator_id=new_user.id)
-    session.add(memo)
-    session.commit()
+    session.bulk_save_objects([new_user, memo])
     assert get_content_of_memo_by_id(user, memo_id) == result
+
+
+def test_proper_get_content_of_memo_by_id(user):
+    words = ['Title', 'this is content', 'Sent to:', '[1]']
+    assert does_table_contain_all_words(words, get_content_of_memo_by_id(user, 1))
