@@ -18,3 +18,9 @@ def test_delete_one_memo_from_inbox_by_id(user, inbox, session):
     assert len(session.query(SentMemo).filter(SentMemo.receiver_id == user.id).all()) == 3
     delete_memo_from_inbox_by_id(user, {1})
     assert len(session.query(SentMemo).filter(SentMemo.receiver_id == user.id).all()) == 2
+
+
+def test_delete_few_memo_from_inbox_by_id(user, inbox, session):
+    assert len(session.query(SentMemo).filter(SentMemo.receiver_id == user.id).all()) == 3
+    delete_memo_from_inbox_by_id(user, {inbox[0].memo_id, inbox[1].memo_id})
+    assert len(session.query(SentMemo).filter(SentMemo.receiver_id == user.id).all()) == 1
