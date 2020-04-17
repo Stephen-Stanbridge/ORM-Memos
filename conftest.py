@@ -4,6 +4,7 @@ from SQL.setup_db import engine, Session
 import pytest
 import re
 from prettytable import PrettyTable
+from typing import Union
 
 
 @pytest.fixture
@@ -37,7 +38,10 @@ def memos(session, user):
     session.commit()
 
 
-def does_table_contain_all_words(words: list, table: PrettyTable) -> bool:
+def does_table_contain_all_words(words: list, table: Union[PrettyTable, str]) -> bool:
+    if isinstance(table, str):
+        table = re.split(r'\n', table)
+        return all(word in table for word in words)
     table = table.get_html_string()
     table = re.split(r'<td>|</td>', table)
     return all(word in table for word in words)
