@@ -1,6 +1,7 @@
 from prettytable import PrettyTable
 from Models.models import User, SentMemo, Memo
 from SQL.setup_db import Session
+from typing import Union
 session = Session()
 
 
@@ -23,7 +24,7 @@ def get_all_received_memos(user: User) -> PrettyTable:
     return result
 
 
-def get_received_memo_by_id(user: User, memo_id: int) -> PrettyTable:
+def get_received_memo_by_id(user: User, memo_id: int) -> Union[PrettyTable, str]:
     if not does_user_have_memo_in_inbox(user.id, memo_id):
         return "You don't have memo with this id in your inbox"
     result = PrettyTable()
