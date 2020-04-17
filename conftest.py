@@ -32,10 +32,23 @@ def user(session):
 
 @pytest.fixture
 def memos(session, user):
-    memos = [Memo(title="Title2", content="this is content2", sent=True, creator_id=user.id),
-             Memo(title="Title3", content="this is content3", sent=False, creator_id=user.id)]
-    session.bulk_save_objects(memos)
+    memo1 = Memo(title="Title2", content="this is content2", sent=True, creator_id=user.id)
+    memo2 = Memo(title="Title3", content="this is content3", sent=False, creator_id=user.id)
+    session.add(memo1)
+    session.add(memo2)
     session.commit()
+    yield [memo1, memo2]
+
+
+@pytest.fixture
+def inbox(session, user, memos):
+    memos[1].sent = True
+    sent_memo1 = SentMemo(memo_id=memos[0].id, receiver_id=user.id)
+    sent_memo2 = SentMemo(memo_id=memos[1].id, receiver_id=user.id)
+    session.add(sent_memo1)
+    session.add(sent_memo2)
+    session.commit()
+    yield [sent_memo1, sent_memo2]
 
 
 def does_table_contain_all_words(words: list, table: Union[PrettyTable, str]) -> bool:
