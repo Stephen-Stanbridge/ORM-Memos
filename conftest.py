@@ -31,6 +31,14 @@ def user(session):
 
 
 @pytest.fixture
+def second_user(session):
+    second_user = User(username="Second_user", password="password")
+    session.add(second_user)
+    session.commit()
+    yield second_user
+
+
+@pytest.fixture
 def memos(session, user):
     memo1 = Memo(title="Title2", content="this is content2", sent=True, creator_id=user.id)
     memo2 = Memo(title="Title3", content="this is content3", sent=False, creator_id=user.id)
