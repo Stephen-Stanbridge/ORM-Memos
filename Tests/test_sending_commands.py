@@ -1,7 +1,7 @@
-from Handlers.sending_commands import make_checks, send_memo
+from Handlers.sending_commands import make_checks, send_memo, send_memo_to_all
 from ConfigClasses.classes import SendMemo
 import pytest
-from Models.models import SentMemo, Memo
+from Models.models import SentMemo, Memo, User
 
 
 def test_make_checks(user, second_user, memos, inbox):
@@ -28,3 +28,14 @@ def test_send_memo(user, second_user, session):
     assert memo_to_send.sent
     assert len(session.query(SentMemo).filter(SentMemo.receiver_id == second_user.id,
                                               SentMemo.memo_id == memo_to_send.id).all()) == before + 1
+
+
+def test_send_memo_to_all(user, second_user, session):
+    new_user = User(username="Third_user", password="password")
+    session.add(new_user)
+    session.commit()
+    before = len(session.query(SentMemo).filter(SentMemo.memo_id == 1).all())
+    send_memo_to_all(user, 1)
+    assert len(session.query(SentMemo).filter(SentMemo.memo_id == 1).all()) == before + 2
+    assert session.query(SentMemo).filter(SentMemo.receiver_id == second_user.id).first() is not None
+    assert session.query(SentMemo).filter(SentMemo.receiver_id == new_user.id).first() is not None
