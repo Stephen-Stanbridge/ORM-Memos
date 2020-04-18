@@ -1,4 +1,4 @@
-from Handlers.sending_commands import make_checks, send_memo, send_memo_to_all
+from Handlers.sending_commands import make_checks, send_memo, send_memo_to_all, send_memo_to_users
 from ConfigClasses.classes import SendMemo
 import pytest
 from Models.models import SentMemo, Memo, User
@@ -39,3 +39,21 @@ def test_send_memo_to_all(user, second_user, session):
     assert len(session.query(SentMemo).filter(SentMemo.memo_id == 1).all()) == before + 2
     assert session.query(SentMemo).filter(SentMemo.receiver_id == second_user.id).first() is not None
     assert session.query(SentMemo).filter(SentMemo.receiver_id == new_user.id).first() is not None
+
+
+def test_send_memo_to_users(user, second_user, session, memos):
+    new_user = User(username="Third_user", password="password")
+    session.add(new_user)
+    session.commit()
+    before = len(session.query(SentMemo).filter(SentMemo.memo_id == 1).all())
+    config = SendMemo()
+    config.memo_id, config.receiver, config.user = 1, [2, 3], user
+    send_memo_to_users(config)
+    assert len(session.query(SentMemo).filter(SentMemo.memo_id == 1).all()) == before + 2
+    assert session.query(SentMemo).filter(SentMemo.receiver_id == second_user.id).first() is not None
+    assert session.query(SentMemo).filter(SentMemo.receiver_id == new_user.id).first() is not None
+    memos[0].creator_id = second_user.id
+    config.memo_id, config.receiver, config.user = memos[0].id, [2, 3], second_user
+    send_memo_to_users(config)
+    assert session.query(SentMemo).filter(SentMemo.memo_id == memos[0].id, SentMemo.receiver_id == second_user.id)\
+        .first() is None
