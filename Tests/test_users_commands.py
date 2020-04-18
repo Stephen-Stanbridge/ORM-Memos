@@ -5,3 +5,9 @@ from Handlers.users_commands import get_list_of_all_users, username_from_id, id_
 def test_get_list_of_all_users(user, second_user):
     words = [user.username, second_user.username, str(user.id), str(second_user.id)]
     assert does_table_contain_all_words(words, get_list_of_all_users())
+
+
+def test_username_from_id(user):
+    words = [user.username]
+    assert does_table_contain_all_words(words, username_from_id(user.id))
+    assert username_from_id(100) == "No user with this id."
