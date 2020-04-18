@@ -53,7 +53,7 @@ def send_memo_to_all(user: User, memo_id: int) -> None:
 def send_memo_to_users(config: config_class.SendMemo) -> None:
     memo_id, user, receivers = config.memo_id, config.user, config.receiver
     if user.id in receivers:
-        receivers.remove(user_id)
+        receivers.remove(user.id)
     for receiver in receivers:
         config.receiver = receiver
         checks = make_checks(config)
