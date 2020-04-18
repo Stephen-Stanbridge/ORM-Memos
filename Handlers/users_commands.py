@@ -11,7 +11,7 @@ def get_list_of_all_users() -> PrettyTable:
     list_of_users = PrettyTable()
     list_of_users.field_names = ['USERNAME', 'ID']
     for user in all_users:
-        list_of_users.add_row([user.username.capitalize(), user.id])
+        list_of_users.add_row([user.username, user.id])
     return list_of_users
 
 
