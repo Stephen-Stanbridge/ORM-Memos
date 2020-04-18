@@ -2,6 +2,7 @@ from Handlers.inbox_commands import does_user_have_memo_in_inbox, delete_all_mem
     delete_memo_from_inbox_by_id, get_received_memo_by_id
 from Models.models import SentMemo, User
 import pytest
+from conftest import does_table_contain_all_words
 
 
 def test_does_user_have_memo_in_inbox(user, inbox):
@@ -40,6 +41,12 @@ def test_delete_memo_from_inbox_by_id_when_memo_belongs_to_another_user(capsys, 
     assert len(session.query(SentMemo).filter(SentMemo.memo_id == 1, SentMemo.receiver_id == 1).all()) == 1
 
 
-def test_improper_get_received_memo_by_id(second_user, user, inbox, session):
+def test_improper_get_received_memo_by_id(second_user, user, inbox):
     assert get_received_memo_by_id(second_user, inbox[0].memo_id) == "You don't have memo with this id in your inbox."
     assert get_received_memo_by_id(second_user, 10) == "You don't have memo with this id in your inbox."
+
+
+def test_get_received_memo_by_id(user, inbox):
+    memo = inbox[0].memo_details
+    words = [str(memo.id), memo.title, memo.content, user.username]
+    assert does_table_contain_all_words(words, get_received_memo_by_id(user, memo.id))
