@@ -11,3 +11,9 @@ def test_username_from_id(user):
     words = [user.username]
     assert does_table_contain_all_words(words, username_from_id(user.id))
     assert username_from_id(100) == "No user with this id."
+
+
+def test_id_from_username(user):
+    words = [user.id]
+    assert does_table_contain_all_words(words, username_from_id(user.username))
+    assert id_from_username('username_does_not_exist') == "User with this username doesn't exist."
