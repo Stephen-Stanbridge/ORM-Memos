@@ -40,7 +40,7 @@ def second_user(session):
 
 @pytest.fixture
 def memos(session, user):
-    memo1 = Memo(title="Title2", content="this is content2", sent=True, creator_id=user.id)
+    memo1 = Memo(title="Title2", content="this is content2", sent=False, creator_id=user.id)
     memo2 = Memo(title="Title3", content="this is content3", sent=False, creator_id=user.id)
     session.add(memo1)
     session.add(memo2)

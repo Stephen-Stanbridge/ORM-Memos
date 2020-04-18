@@ -26,7 +26,7 @@ def get_all_received_memos(user: User) -> PrettyTable:
 
 def get_received_memo_by_id(user: User, memo_id: int) -> Union[PrettyTable, str]:
     if not does_user_have_memo_in_inbox(user.id, memo_id):
-        return "You don't have memo with this id in your inbox"
+        return "You don't have memo with this id in your inbox."
     result = PrettyTable()
     result.field_names = ["MEMO ID", "TITLE", "CONTENT", "AUTHOR"]
     memo = session.query(Memo).filter(Memo.id == memo_id).first()
