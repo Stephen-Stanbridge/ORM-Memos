@@ -11,6 +11,7 @@ postgresql
 argparse
 prettytable
 prompt-toolkit
+pytest
 ```
 
 
@@ -25,8 +26,8 @@ Optional: Create virtual environment.
 
 
 # Tests
+In main directory of application run pytest or pytest-3 depending on version of Python installed on your machine.
 
-TODO
 
 
 # How does it work and look like?
