@@ -15,7 +15,7 @@ def test_delete_all_memos_from_inbox(user, inbox, session):
 
 
 def test_delete_one_memo_from_inbox_by_id(user, inbox, session):
-    before = len(session.query(SentMemo).filter(SentMemo.receiver_id == user.id).all()) == 3
+    before = len(session.query(SentMemo).filter(SentMemo.receiver_id == user.id).all())
     delete_memo_from_inbox_by_id(user, {1})
     assert before - 1 == len(session.query(SentMemo).filter(SentMemo.receiver_id == user.id).all())
 
@@ -30,7 +30,14 @@ def test_delete_memo_from_inbox_by_id_when_memo_does_not_exist(capsys, user, ses
     delete_memo_from_inbox_by_id(user, {1, 2})
     out, err = capsys.readouterr()
     assert "You don't have memo with id 2 in your inbox. Ommited." in out
-    assert session.query(SentMemo).filter(SentMemo.memo_id == 1).first() is None
+    assert session.query(SentMemo).filter(SentMemo.memo_id == 1, SentMemo.receiver_id == user.id).first() is None
+
+
+def test_delete_memo_from_inbox_by_id_when_memo_belongs_to_another_user(capsys, user, second_user, session):
+    delete_memo_from_inbox_by_id(second_user, {1})
+    out, err = capsys.readouterr()
+    assert "You don't have memo with id 1 in your inbox. Ommited." in out
+    assert len(session.query(SentMemo).filter(SentMemo.memo_id == 1, SentMemo.receiver_id == 1).all()) == 1
 
 
 def test_improper_get_received_memo_by_id(second_user, user, inbox, session):
