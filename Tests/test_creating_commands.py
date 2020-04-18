@@ -31,24 +31,16 @@ def test_successfull_create_memo(monkeypatch, user, session):
 
 
 def test_get_all_created_memos(memos, user):
-    words = ['Title2', 'Title3', 'True', 'False']
+    words = [memos[0].title, memos[1].title, str(memos[0].sent), str(memos[1].sent)]
     assert does_table_contain_all_words(words, get_all_created_memos(user))
 
 
-PARAMS = [
-    (10, "You don't own memo with this id."),
-    (4, "You don't own memo with this id.")
-]
+def test_improper_get_content_of_memo_by_id(session, second_user, memos):
+    assert get_content_of_memo_by_id(second_user, memos[0].id) == "You don't own memo with this id."
+    assert get_content_of_memo_by_id(second_user, 100) == "You don't own memo with this id."
 
 
-@pytest.mark.parametrize('memo_id, result', PARAMS)
-def test_improper_get_content_of_memo_by_id(user, memo_id, result, session):
-    new_user = User(username="new_user", password="password")
-    memo = Memo(id=4, title="Another", content="users memo", sent=False, creator_id=new_user.id)
-    session.bulk_save_objects([new_user, memo])
-    assert get_content_of_memo_by_id(user, memo_id) == result
-
-
-def test_proper_get_content_of_memo_by_id(user):
-    words = ['Title', 'this is content', 'Sent to:', '[1]']
+def test_proper_get_content_of_memo_by_id(user, session):
+    memo = session.query(Memo).filter(Memo.creator_id == user.id, Memo.id == 1).first()
+    words = [memo.title, memo.content, 'Sent to:', '[1]']
     assert does_table_contain_all_words(words, get_content_of_memo_by_id(user, 1))
